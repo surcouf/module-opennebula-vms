@@ -37,9 +37,9 @@ resource "opennebula_virtual_machine" "vm" {
     dynamic "nic" {
         for_each = var.networks
         content {
-            physical_device = each.value.interface
+            physical_device = nic.value.interface
             model           = "virtio"
-            network_id      = data.opennebula_virtual_network.network[each.key].id
+            network_id      = data.opennebula_virtual_network.network[nic.key].id
         }
     }
 }
