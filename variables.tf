@@ -30,6 +30,12 @@ variable "permissions" {
     default     = 660
 }
 
+variable "vm_depends_on" {
+  description = "Add any external depend on module here like vm_depends_on = [module.fw_core01.firewall]."
+  type        = any
+  default     = null
+}
+
 variable "template" {
     description = "Name of the OpenNebula virtual machine template"
 }
