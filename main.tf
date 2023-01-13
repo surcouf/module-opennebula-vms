@@ -19,7 +19,7 @@ resource "opennebula_virtual_machine" "vm" {
 
     template_id = data.opennebula_template.template.id
   
-    group       = data.opennebula_group.pito.name
+    group       = data.opennebula_group.group.name
     permissions = var.permissions
 
     memory      = var.memory

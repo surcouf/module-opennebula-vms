@@ -18,8 +18,8 @@ variable "staticvmname" {
   default     = null
 }
 
-# OpenNebula Groups
-variable "groups" {
+# OpenNebula Group
+variable "group" {
     description = "Define OpenNebula group."
     type        = string
     default     = "pito"
