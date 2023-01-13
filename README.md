@@ -29,13 +29,26 @@ Next, copy the code below and fill in the required variables.
 
 ```hcl
 # Configure the OpenNebula Provider
-provider "opennebula" {
-  user           = "fill"
-  password       = "fill"
-  server_url     = "fill"
+variable "opennebula_username" {
+  type = string
+}
 
-  # if you have a self-signed cert
-  allow_unverified_ssl = true
+variable "opennebula_password" {
+  type = string
+}
+
+terraform {
+  required_providers {
+    opennebula = {
+      source = "OpenNebula/opennebula"
+    }
+  }
+}
+
+provider "opennebula" {
+  endpoint = "http://one.infra.dgfip:2633/RPC2"
+  username = var.opennebula_username
+  password = var.opennebula_password
 }
 
 # Deploy 2 linux VMs
@@ -58,7 +71,6 @@ module "example-server-linuxvm" {
     }
     # To use DHCP create Empty list ["",""]; You can also use a CIDR annotation;
   }
-  gateway   = "10.13.113.1"
 }
 ```
 
