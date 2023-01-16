@@ -42,4 +42,13 @@ resource "opennebula_virtual_machine" "vm" {
             network_id      = data.opennebula_virtual_network.network[nic.key].id
         }
     }
+
+    // Disks defined in the original template
+    dynamic "disk" {
+        for_each = data.opennebula_template.template.disk
+        iterator = template_disk
+        content {
+            size            = var.disk_size != null ? var.disk_size[template_disk.key] : data.opennebula_template.template.disk[template_disk.key].size
+        }
+    }
 }

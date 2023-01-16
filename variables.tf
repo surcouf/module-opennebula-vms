@@ -54,3 +54,9 @@ variable "networks" {
     }))
     default     = {}
 }
+
+variable "disk_size" {
+  description = "List of disk sizes to override template disk size."
+  type        = list(any)
+  default     = null
+}
