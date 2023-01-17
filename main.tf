@@ -2,27 +2,33 @@ data "opennebula_group" "group" {
     name        = var.group
 }
 
+data "opennebula_template" "templates" {
+    for_each    = var.instances
+    name        = each.value.template
+}
+
 data "opennebula_template" "template" {
+    count       = var.template != null ? 1 : 0
     name        = var.template
 }
 
-data "opennebula_virtual_network" "network" {
-    for_each = var.networks
-    name = each.value.network_id
+// Get id of networks defined with each instance
+data "opennebula_virtual_network" "networks" {
+    for_each = { for network in local.networks: network.name => network }
+    name = each.value.name
 }
 
 // Cloning a Linux VM from a given template
 resource "opennebula_virtual_machine" "vm" {
-    count       = var.instances
-    depends_on  = [ var.vm_depends_on ]
-    name        = var.staticvmname != null ? var.staticvmname : format("${var.vmname}${var.vmnameformat}", count.index + 1)
+    for_each    = var.instances
+    name        = each.key
 
-    template_id = data.opennebula_template.template.id
-  
+    template_id = each.value.template != null ? data.opennebula_template.templates[each.key].id : data.opennebula_template.template[0].id 
+
     group       = data.opennebula_group.group.name
-    permissions = var.permissions
+    permissions = each.value.permissions
 
-    memory      = var.memory
+    memory      = each.value.memory != null ? each.value.memory : var.memory
 
     os {
         arch = "x86_64"
@@ -35,20 +41,20 @@ resource "opennebula_virtual_machine" "vm" {
     }  
 
     dynamic "nic" {
-        for_each = var.networks
+        for_each = each.value.network_interfaces
         content {
-            physical_device = nic.value.interface
+            physical_device = nic.key
             model           = "virtio"
-            network_id      = data.opennebula_virtual_network.network[nic.key].id
+            network_id      = data.opennebula_virtual_network.networks[nic.value.network_name].id
         }
     }
 
     // Disks defined in the original template
     dynamic "disk" {
-        for_each = data.opennebula_template.template.disk
+        for_each = data.opennebula_template.templates[each.key].disk
         iterator = template_disk
         content {
-            size            = var.disk_size != null ? var.disk_size[template_disk.key] : data.opennebula_template.template.disk[template_disk.key].size
+            size            = each.value.disk_size != null ? each.value.disk_size[template_disk.key] : data.opennebula_template.templates[each.key].disk[template_disk.key].size
         }
     }
 }

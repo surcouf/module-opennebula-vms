@@ -12,7 +12,7 @@ This Terraform module deploys single or multiple virtual machines of type Linux 
 - Ability to add multiple network cards for the VM
 - Ability to configure advanced features for a VM.
 - Ability to deploy either a datastore or a datastore cluster.
-  - Add extra data disk (up to 15) to the VM.
+  - Add extra data disk (up to 8) to the VM.
 - Ability to define depend on using variable vm_depends_on
 
 > Note: For the module to work, it needs several required variables corresponding to existing resources in vSphere. Please refer to the variable section for the list of required variables.
@@ -56,26 +56,26 @@ module "example-server-linuxvm" {
   source    = "https://forge.dgfip.finances.rie.gouv.fr/dgfip/design/terraform/terraform-opennebula-vms"
   version   = "1.0.0"
   template  = "VM Template Name (Should Already exist)"
-  instances = 2
-  names     = "example-server-linux"
-  networks  = {
-    "admin" = {
-      network_id  = "admin"
-      interface   = "eth0"
-      ipv4addr    = "192.168.1.2/24"
-    } 
-    "appli" = {
-      network_id  = "appli"
-      interface   = "eth1"
-      ipv4addr    = "172.16.1.2/24"
-    }
-    # To use DHCP create Empty list ["",""]; You can also use a CIDR annotation;
-  }
+  instances = {
+    "example-server-linux"
+      template  = "VM Template Name (Should Already exist)"
+      memory    = 2048
+      networks  = {
+        "eth0" = {
+          network_name = "admin"
+          ipv4addr     = "192.168.1.2/24"
+        }
+        "eth1" = {
+          network_name = "appli"
+          ipv4addr     = "172.16.1.2/24"
+        }
+        # To use DHCP create Empty list ["",""]; You can also use a CIDR annotation;
+      }
 }
 ```
 
 Finally, run 
 
 ```bash
-terraform run
+terraform apply
 ```
