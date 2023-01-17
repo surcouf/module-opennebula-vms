@@ -1,3 +1,4 @@
+# OpenNebula VM instances
 variable "instances" {
     description = "Number of instances you want to deploy from the template"  
     type        = map(object({
@@ -22,6 +23,7 @@ variable "group" {
 
 variable "permissions" {
     description = "Permissions (Usage/Manage/Admin) for each VMs."
+    type        = number
     default     = 660
 }
 

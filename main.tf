@@ -26,7 +26,7 @@ resource "opennebula_virtual_machine" "vm" {
     template_id = each.value.template != null ? data.opennebula_template.templates[each.key].id : data.opennebula_template.template[0].id 
 
     group       = data.opennebula_group.group.name
-    permissions = each.value.permissions
+    permissions = each.value.permissions != null ? each.value.permissions : var.permissions
 
     memory      = each.value.memory != null ? each.value.memory : var.memory
 
