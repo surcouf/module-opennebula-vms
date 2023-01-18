@@ -53,8 +53,7 @@ provider "opennebula" {
 
 # Deploy 2 linux VMs
 module "example-server-linuxvm" {
-  source    = "https://forge.dgfip.finances.rie.gouv.fr/dgfip/design/terraform/terraform-opennebula-vms"
-  version   = "1.0.0"
+  source    = "git::https://forge.dgfip.finances.rie.gouv.fr/dgfip/design/terraform/terraform-opennebula-vms.git?ref=1.0.0"
   template  = "VM Template Name (Should Already exist)"
   instances = {
     "example-server-linux"
