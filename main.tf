@@ -3,8 +3,8 @@ data "opennebula_group" "group" {
 }
 
 data "opennebula_template" "templates" {
-    for_each    = var.instances
-    name        = each.value.template
+    for_each    = toset(local.templates)
+    name        = each.key
 }
 
 data "opennebula_template" "template" {
@@ -14,8 +14,8 @@ data "opennebula_template" "template" {
 
 // Get id of networks defined with each instance
 data "opennebula_virtual_network" "networks" {
-    for_each = { for network in local.networks: network.name => network }
-    name = each.value.name
+    for_each    = toset(local.networks)
+    name        = each.key
 }
 
 // Cloning a Linux VM from a given template
@@ -23,7 +23,7 @@ resource "opennebula_virtual_machine" "vm" {
     for_each    = var.instances
     name        = each.key
 
-    template_id = each.value.template != null ? data.opennebula_template.templates[each.key].id : data.opennebula_template.template[0].id 
+    template_id = each.value.template != null ? data.opennebula_template.templates[each.value.template].id : data.opennebula_template.template[0].id
 
     group       = data.opennebula_group.group.name
     permissions = each.value.permissions != null ? each.value.permissions : var.permissions
@@ -46,15 +46,16 @@ resource "opennebula_virtual_machine" "vm" {
             physical_device = nic.key
             model           = "virtio"
             network_id      = data.opennebula_virtual_network.networks[nic.value.network_name].id
+            ip              = nic.value.ipv4addr
         }
     }
 
     // Disks defined in the original template
     dynamic "disk" {
-        for_each = data.opennebula_template.templates[each.key].disk
+        for_each = data.opennebula_template.templates[each.value.template].disk
         iterator = template_disk
         content {
-            size            = each.value.disk_size != null ? each.value.disk_size[template_disk.key] : data.opennebula_template.templates[each.key].disk[template_disk.key].size
+            size            = each.value.disk_size != null ? each.value.disk_size[template_disk.key] : data.opennebula_template.templates[each.value.template].disk[template_disk.key].size
         }
     }
 }

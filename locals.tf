@@ -2,9 +2,12 @@
 locals {
   networks = distinct(flatten([
     for instance in var.instances: [
-        for network_interface in instance.network_interfaces: {
-            name = network_interface.network_name 
-        }
+        for name, network_interface in instance.network_interfaces: network_interface.network_name
     ]
   ]))
-} 
+
+// Build flatten list of all templates defined with each instance
+  templates = distinct(flatten([
+    for name, instance in var.instances: instance.template
+  ]))
+}
