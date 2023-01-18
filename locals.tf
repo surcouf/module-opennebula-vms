@@ -8,6 +8,7 @@ locals {
 
 // Build flatten list of all templates defined with each instance
   templates = distinct(flatten([
-    for name, instance in var.instances: instance.template
+    for instance in var.instances: instance.template
+    if instance.template != null
   ]))
 }
