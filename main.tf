@@ -18,6 +18,11 @@ data "opennebula_virtual_network" "networks" {
     name        = each.key
 }
 
+data "opennebula_image" "images" {
+    for_each    = toset(local.images)
+    name        = each.key
+}
+
 // Cloning a Linux VM from a given template
 resource "opennebula_virtual_machine" "vm" {
     for_each    = var.instances
@@ -38,8 +43,9 @@ resource "opennebula_virtual_machine" "vm" {
     context = {
         HOSTNAME="$NAME"
         NETWORK="YES"
-    }  
+    }
 
+    keep_nic_order = true
     dynamic "nic" {
         for_each = each.value.network_interfaces
         content {
@@ -52,10 +58,14 @@ resource "opennebula_virtual_machine" "vm" {
 
     // Disks defined in the original template
     dynamic "disk" {
-        for_each = data.opennebula_template.templates[each.value.template].disk
-        iterator = template_disk
+        //for_each = toset(merge( var.disks, each.value.disks))
+        for_each = each.value.disks
         content {
-            size            = each.value.disk_size != null ? each.value.disk_size[template_disk.key] : data.opennebula_template.templates[each.value.template].disk[template_disk.key].size
+            image_id        = disk.value.image != null ? data.opennebula_image.images[disk.value.image].id : null
+            size            = disk.value.size
+            target          = disk.value.target
+            volatile_type   = disk.value.volatile_type
+            volatile_format = disk.value.volatile_format
         }
     }
 }

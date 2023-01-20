@@ -2,13 +2,19 @@
 variable "instances" {
     description = "Number of instances you want to deploy from the template"  
     type        = map(object({
-        memory           = optional(number)
-        permissions      = optional(number)
-        template         = optional(string)
-        disk_size        = optional(list(any))
-        network_interfaces = map(object({
+        memory              = optional(number)
+        permissions         = optional(number)
+        template            = optional(string)
+        disks               = optional(list(object({
+              volatile_type   = optional(string)
+              volatile_format = optional(string)
+              image    = optional(string)
+              target   = optional(string)
+              size     = optional(number)
+            })))
+        network_interfaces  = map(object({
             network_name = string
-            ipv4addr     = string
+            ipv4addr     = optional(string)
         }))
 
     }))
@@ -44,8 +50,10 @@ variable "memory" {
     default     = 4096
 }
 
-variable "disk_size" {
-  description = "List of disk sizes to override template disk size."
-  type        = list(any)
+variable "disks" {
+  description = "List of additional disks."
+  type        = map(object({
+    size  = number
+  }))
   default     = null
 }
