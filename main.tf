@@ -47,17 +47,18 @@ resource "opennebula_virtual_machine" "vm" {
 
     keep_nic_order = true
     dynamic "nic" {
-        for_each = each.value.network_interfaces
+        for_each = each.value.networks
         content {
-            physical_device = nic.key
+            physical_device = nic.value.physical_device
             model           = "virtio"
             network_id      = data.opennebula_virtual_network.networks[nic.value.network_name].id
             ip              = nic.value.ipv4addr
+            security_groups = nic.value.security_groups != null ? nic.value.security_groups : [ 0 ]
         }
     }
 
     // Disks defined in the original template
-    dynamic "disk" {
+    /*dynamic "disk" {
         //for_each = toset(merge( var.disks, each.value.disks))
         for_each = each.value.disks
         content {
@@ -67,5 +68,5 @@ resource "opennebula_virtual_machine" "vm" {
             volatile_type   = disk.value.volatile_type
             volatile_format = disk.value.volatile_format
         }
-    }
+    }*/
 }
