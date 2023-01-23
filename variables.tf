@@ -18,7 +18,6 @@ variable "instances" {
             ipv4addr        = optional(string)
             security_groups = optional(list(any))
         }))
-
     }))
 }
 
