@@ -12,8 +12,7 @@ variable "instances" {
               target   = optional(string)
               size     = optional(number)
             })))
-        networks  = list(object({
-            physical_device = string
+        networks  = map(object({
             network_name    = string
             ipv4addr        = optional(string)
             security_groups = optional(list(any))

@@ -7,7 +7,7 @@ locals {
     if instance.networks != null
   ]))
 
-// Build flatten list of all templates defined with each instance
+  // Build flatten list of all templates defined with each instance
   templates = distinct(flatten([
     for instance in var.instances: instance.template
     if instance.template != null
