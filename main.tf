@@ -7,11 +7,6 @@ data "opennebula_template" "templates" {
     name        = each.key
 }
 
-data "opennebula_template" "template" {
-    count       = var.template != null ? 1 : 0
-    name        = var.template
-}
-
 // Get id of networks defined with each instance
 data "opennebula_virtual_network" "networks" {
     for_each    = toset(local.networks)
@@ -28,7 +23,7 @@ resource "opennebula_virtual_machine" "vm" {
     for_each    = var.instances
     name        = each.key
 
-    template_id = each.value.template != null ? data.opennebula_template.templates[each.value.template].id : data.opennebula_template.template[0].id
+    template_id = each.value.template != null ? data.opennebula_template.templates[each.value.template].id : data.opennebula_template.templates[var.template].id
 
     group       = data.opennebula_group.group.name
     permissions = each.value.permissions != null ? each.value.permissions : var.permissions
