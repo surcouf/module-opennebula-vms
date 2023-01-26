@@ -42,7 +42,7 @@ variable "vm_depends_on" {
 variable "template" {
   description = "Name of the OpenNebula virtual machine template"
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "memory" {
