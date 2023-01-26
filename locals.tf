@@ -8,10 +8,10 @@ locals {
   ]))
 
   // Build flatten list of all templates defined with each instance
-  templates = distinct( flatten( [[var.template], [
+  templates = distinct( compact( flatten( [[var.template], [
       for instance in var.instances: instance.template
       if instance.template != null
-    ]]
+    ]])
   ))
 
   images = distinct( flatten([
