@@ -40,7 +40,8 @@ resource "opennebula_virtual_machine" "vm" {
           HOSTNAME="$NAME"
           NETWORK="YES"
         },
-        { for idx, net in each.value.networks : "ETH${idx}_IP" => net.ipv4addr }
+        { for idx, net in each.value.networks : "ETH${idx}_IP" => net.ipv4addr },
+        { for idx, net in each.value.networks : "ETH${idx}_GATEWAY" => net.gateway if net.gateway != null }
     )
 
     keep_nic_order = true

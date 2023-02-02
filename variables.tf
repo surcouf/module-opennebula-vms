@@ -16,6 +16,7 @@ variable "instances" {
             physical_device = string
             network_name    = string
             ipv4addr        = optional(string)
+            gateway         = optional(string)
             security_groups = optional(list(any))
         }))
     }))
