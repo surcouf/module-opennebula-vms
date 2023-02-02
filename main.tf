@@ -38,16 +38,23 @@ resource "opennebula_virtual_machine" "vm" {
     context = {
         HOSTNAME="$NAME"
         NETWORK="YES"
+        ETH0_IP="${each.value.networks[0].ipv4addr}"
+        ETH1_IP="${length(each.value.networks) > 1 ? each.value.networks[1].ipv4addr : "" }"
+        ETH2_IP="${length(each.value.networks) > 2 ? each.value.networks[2].ipv4addr : "" }"
+        ETH3_IP="${length(each.value.networks) > 3 ? each.value.networks[3].ipv4addr : "" }"
+        ETH4_IP="${length(each.value.networks) > 4 ? each.value.networks[4].ipv4addr : "" }"
+        ETH5_IP="${length(each.value.networks) > 5 ? each.value.networks[5].ipv4addr : "" }"
+        ETH6_IP="${length(each.value.networks) > 6 ? each.value.networks[6].ipv4addr : "" }"
+        ETH7_IP="${length(each.value.networks) > 7 ? each.value.networks[7].ipv4addr : "" }"
     }
 
     keep_nic_order = true
     dynamic "nic" {
         for_each = each.value.networks
         content {
-            physical_device = nic.key
+            physical_device = nic.value.physical_device
             model           = "virtio"
             network_id      = data.opennebula_virtual_network.networks[nic.value.network_name].id
-            ip              = nic.value.ipv4addr
             security_groups = nic.value.security_groups != null ? nic.value.security_groups : [ 0 ]
         }
     }
