@@ -5,6 +5,7 @@ variable "instances" {
         memory              = optional(number)
         permissions         = optional(number)
         template            = optional(string)
+        boot                = optional(list(string))
         disks               = optional(list(object({
               volatile_type   = optional(string)
               volatile_format = optional(string)
@@ -59,3 +60,9 @@ variable "disks" {
   }))
   default     = null
 }
+
+variable "boot" {
+  description = "Ordered list of bootable medias"
+  type        = list(string)
+  default     = [ "nic0", "disk0" ]
+} 

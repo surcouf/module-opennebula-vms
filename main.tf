@@ -32,7 +32,8 @@ resource "opennebula_virtual_machine" "vm" {
 
     os {
         arch = "x86_64"
-        boot = "nic0,disk0"
+        //boot = "nic0,disk0"
+        boot = join(",", each.value.boot != null ? each.value.boot : var.boot)
     } 
 
     context = merge(
