@@ -9,9 +9,10 @@ variable "instances" {
         disks               = optional(list(object({
               volatile_type   = optional(string)
               volatile_format = optional(string)
-              image    = optional(string)
-              target   = optional(string)
-              size     = optional(number)
+              image           = optional(string)
+              image_id        = optional(string)
+              target          = optional(string)
+              size            = optional(number)
             })))
         networks  = list(object({
             physical_device = string
