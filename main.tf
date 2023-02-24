@@ -59,7 +59,7 @@ resource "opennebula_virtual_machine" "vm" {
     dynamic "disk" {
         for_each = each.value.disks != null ? each.value.disks : []
         content {
-            image_id        = disk.value.image != null ? data.opennebula_image.images[disk.value.image].id : null
+            image_id        = disk.value.image != null ? data.opennebula_image.images[disk.value.image].id : disk.value.image_id
             size            = disk.value.size
             target          = disk.value.target
             volatile_type   = disk.value.volatile_type == "" ? null : disk.value.volatile_type
