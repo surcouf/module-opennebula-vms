@@ -32,7 +32,6 @@ resource "opennebula_virtual_machine" "vm" {
 
     os {
         arch = "x86_64"
-        //boot = "nic0,disk0"
         boot = join(",", each.value.boot != null ? each.value.boot : var.boot)
     } 
 
@@ -56,15 +55,15 @@ resource "opennebula_virtual_machine" "vm" {
         }
     }
 
-    // Disks defined in the original template
+    // Override disks defined with VM
     dynamic "disk" {
         for_each = each.value.disks != null ? each.value.disks : []
         content {
             image_id        = disk.value.image != null ? data.opennebula_image.images[disk.value.image].id : null
             size            = disk.value.size
             target          = disk.value.target
-            volatile_type   = disk.value.volatile_type
-            volatile_format = disk.value.volatile_format
+            volatile_type   = disk.value.volatile_type == "" ? null : disk.value.volatile_type
+            volatile_format = disk.value.volatile_format == "" ? null : disk.value.volatile_format
         }
     }
 }
