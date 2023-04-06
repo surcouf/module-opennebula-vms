@@ -56,20 +56,23 @@ module "example-server-linuxvm" {
   source    = "git::https://forge.dgfip.finances.rie.gouv.fr/dgfip/design/terraform/terraform-opennebula-vms.git?ref=1.0.0"
   template  = "VM Template Name (Should Already exist)"
   instances = {
-    "example-server-linux"
+    "example-server-linux" = {
       template  = "VM Template Name (Should Already exist)"
       memory    = 2048
-      networks  = {
-        "eth0" = {
+      networks  = [
+        {
+          physical_device = "eth0"
           network_name = "admin"
           ipv4addr     = "192.168.1.2/24"
-        }
-        "eth1" = {
+        },
+        {
+          physical_device = "eth1"
           network_name = "appli"
           ipv4addr     = "172.16.1.2/24"
         }
         # To use DHCP create Empty list ["",""]; You can also use a CIDR annotation;
-      }
+      ]
+    }
 }
 ```
 
