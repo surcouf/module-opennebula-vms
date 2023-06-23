@@ -37,7 +37,7 @@ resource "opennebula_virtual_machine" "vm" {
 
     context = merge(
         {
-          HOSTNAME="$NAME"
+          SET_HOSTNAME="$NAME"
           NETWORK="YES"
         },
         { for idx, net in each.value.networks : "ETH${idx}_IP" => net.ipv4addr },
